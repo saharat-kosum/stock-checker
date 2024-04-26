@@ -17,13 +17,22 @@ model Users {
   id            String     @id @default(uuid())
   email         String     @unique
   password      String
+  role          String     @default("user")
+  refreshToken  String     @default("") 
 }
 
 model Material {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  description String?
-  quality   Int      @default(0)
-  create_ts DateTime @default(now())
-  modify_ts DateTime @updatedAt
+  id            String   @id @default(uuid())
+  sloc          Int      @default(6101)
+  code          Int
+  name          String   @unique
+  unit          String   @default("EA")
+  bringForward  Int    
+  stockIn       Int      @default(0)
+  stockOut      Int      @default(0)
+  balance       Int      @default(0)
+  stockCount    Int  
+  note          String   @default("")
+  createDate    DateTime @default(now())
+  modifyDate    DateTime @updatedAt
 }
