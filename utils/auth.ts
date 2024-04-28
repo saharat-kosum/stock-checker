@@ -1,5 +1,7 @@
 import { jwtVerify, SignJWT } from "jose";
+import { JWTExpired } from "jose/errors";
 import { cookies } from "next/headers";
+import axios from "axios";
 
 export function getAccessKey() {
   const secret = process.env.ACCESS_TOKEN_SECRET;
@@ -31,8 +33,23 @@ export async function verifyToken() {
       const { payload } = await jwtVerify(token.value, secretKey);
       return payload;
     } catch (error) {
-      console.error("Verify JWT Token failed :", error);
-      return null;
+      if (error instanceof JWTExpired) {
+        try {
+          const response = await axios.post("/api/token/refresh");
+          if (response.status === 200) {
+            return verifyToken();
+          } else {
+            console.error("Refresh Token failed :", response.data);
+            return null;
+          }
+        } catch (error) {
+          console.error("Refresh Token failed :", error);
+          return null;
+        }
+      } else {
+        console.error("Verify JWT Token failed :", error);
+        return null;
+      }
     }
   } else {
     console.log("No token");
