@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "./utils/auth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin")) {
-    const isLoggedIn = true;
-    if (isLoggedIn) {
+    const token = await verifyToken();
+    if (token) {
       return NextResponse.next();
     } else {
       return NextResponse.redirect(new URL("/admin/login", request.url));
@@ -13,11 +14,11 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/api")) {
-    if (pathname.includes("/login")) {
+    if (pathname.includes("/login") || pathname.includes("/balance")) {
       return NextResponse.next();
     }
 
-    const token = true;
+    const token = await verifyToken();
     if (token) {
       return NextResponse.next();
     } else {
