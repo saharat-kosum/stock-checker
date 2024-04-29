@@ -1,5 +1,5 @@
 "use client";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/Spinner";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { login } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";

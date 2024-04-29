@@ -5,10 +5,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin")) {
-    if (pathname.includes("/login")) {
-      return NextResponse.next();
-    }
-
     const token = await verifyToken();
     if (token) {
       return NextResponse.next();
