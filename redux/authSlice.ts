@@ -5,7 +5,6 @@ import axios from "axios";
 const initialState: AuthInitialState = {
   loading: false,
   error: null,
-  success: false,
 };
 
 export const login = createAsyncThunk(
@@ -39,11 +38,9 @@ export const authSlice = createSlice({
     builder
       .addCase(login.fulfilled, (state) => {
         state.loading = false;
-        state.success = true;
       })
       .addCase(logout.fulfilled, (state) => {
         state.loading = false;
-        state.success = true;
       })
       .addMatcher(
         (action) =>

@@ -10,24 +10,22 @@ function AdminLogin() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector((state) => state.auth.loading);
-  const LoginSuccess = useAppSelector((state) => state.auth.success);
   const error = useAppSelector((state) => state.auth.error);
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
-  useEffect(() => {
-    if (LoginSuccess) {
-      router.push("/admin");
-    }
-  }, [LoginSuccess, router]);
-
   const logInHandle = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity()) {
-      dispatch(login(user));
+      try {
+        await dispatch(login(user));
+        router.push("/admin");
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
     } else {
       form.classList.add("was-validated");
     }

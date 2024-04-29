@@ -1,7 +1,26 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/redux/Store";
+import { logout } from "@/redux/authSlice";
+import { useRouter } from "next/navigation";
+import Spinner from "./Spinner";
 
 function Navbar() {
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const isLoading = useAppSelector((state) => state.auth.loading);
+
+  const logoutHandle = async () => {
+    try {
+      await dispatch(logout());
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div className="navbar bg-base-100 drop-shadow-lg">
       <div className="flex-1">
@@ -10,7 +29,13 @@ function Navbar() {
         </Link>
       </div>
       <div className="flex-none">
-        <button className="btn btn-outline">Log out</button>
+        <button
+          className="btn btn-outline"
+          disabled={isLoading}
+          onClick={() => logoutHandle()}
+        >
+          {isLoading ? <Spinner size="md" /> : "Log out"}
+        </button>
       </div>
     </div>
   );
