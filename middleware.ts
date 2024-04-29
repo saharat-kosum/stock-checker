@@ -5,6 +5,10 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin")) {
+    if (pathname.includes("/login")) {
+      return NextResponse.next();
+    }
+
     const token = await verifyToken();
     if (token) {
       return NextResponse.next();
@@ -14,7 +18,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/api")) {
-    if (pathname.includes("/login") || pathname.includes("/balance")) {
+    const condition =
+      pathname.includes("/login") ||
+      pathname.includes("/balance") ||
+      pathname.includes("/register");
+
+    if (condition) {
       return NextResponse.next();
     }
 

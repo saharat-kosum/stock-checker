@@ -2,7 +2,10 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     return Response.json(
       await prisma.material.findUnique({
@@ -59,7 +62,10 @@ export async function PUT(
   }
 }
 
-export async function DELETE({ params }: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const deletedMaterial = await prisma.material.delete({
       where: { id: params.id },
