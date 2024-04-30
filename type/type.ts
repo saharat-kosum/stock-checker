@@ -11,17 +11,17 @@ export interface MaterialInitialState {
 }
 
 export interface Material {
-  id: String;
+  id: string;
   sloc: number;
   code: number;
-  name: String;
-  unit: String;
+  name: string;
+  unit: string;
   bringForward: number;
   stockIn: number;
   stockOut: number;
   balance: number;
   stockCount: number;
-  note: String;
+  note: string;
   createDate: Date;
   modifyDate: Date;
 }
@@ -29,4 +29,16 @@ export interface Material {
 export enum EnumMode {
   Create = "Create",
   Edit = "Edit",
+}
+
+export interface CurrentPayload {
+  name: keyof Material;
+  value: string | number;
+}
+
+export interface InputArray {
+  name: keyof Material;
+  type: string;
+  class: string;
+  display: string;
 }

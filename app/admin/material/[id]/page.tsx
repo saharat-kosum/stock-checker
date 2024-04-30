@@ -1,8 +1,11 @@
 "use client";
-import { EnumMode } from "@/type/type";
+import { AppDispatch, useAppSelector } from "@/redux/Store";
+import { setCurrentMat } from "@/redux/materialSlice";
+import { EnumMode, InputArray, Material } from "@/type/type";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const inputArray = [
+const inputArray: InputArray[] = [
   { name: "sloc", class: "max-w-xs", type: "number", display: "Sloc" },
   { name: "code", class: "max-w-xs", type: "number", display: "Material Code" },
   { name: "name", class: "col-span-2", type: "text", display: "รายการ" },
@@ -26,6 +29,23 @@ const inputArray = [
 
 function MaterialManage() {
   const [mode, setMode] = useState<EnumMode>(EnumMode.Create);
+  const dispatch = useDispatch<AppDispatch>();
+  const isLoading = useAppSelector((state) => state.material.loading);
+  const currentMat = useAppSelector((state) => state.material.currentMaterial);
+
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    type: string,
+    name: keyof Material
+  ) => {
+    const value =
+      type === "text" ? event.target.value : parseInt(event.target.value);
+
+    dispatch(setCurrentMat({ name, value }));
+  };
+
   return (
     <div className="container mx-auto mt-10 p-2">
       <h1 className="text-3xl font-bold">{mode}</h1>
@@ -39,6 +59,8 @@ function MaterialManage() {
               type={input.type}
               name={input.name}
               placeholder={input.display}
+              onChange={(e) => handleChange(e, input.type, input.name)}
+              value={currentMat[input.name].toString()}
               className="input input-bordered w-full"
             />
           </label>
@@ -51,6 +73,8 @@ function MaterialManage() {
             className="textarea textarea-bordered h-24"
             placeholder="หมายเหตุ"
             name="note"
+            onChange={(e) => handleChange(e, "text", "note")}
+            value={currentMat.note}
           ></textarea>
         </label>
       </div>

@@ -1,5 +1,5 @@
-import { Material, MaterialInitialState } from "@/type/type";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CurrentPayload, Material, MaterialInitialState } from "@/type/type";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const defaultMaterial: Material = {
@@ -71,7 +71,23 @@ export const deleteMaterial = createAsyncThunk(
 export const materialSlice = createSlice({
   name: "material",
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentMat: (state, action: PayloadAction<CurrentPayload>) => {
+      const { name, value } = action.payload;
+      if (
+        typeof state.currentMaterial[name] === "string" &&
+        typeof value === "string"
+      ) {
+        (state.currentMaterial[name] as string) = value;
+      }
+      if (
+        typeof state.currentMaterial[name] === "number" &&
+        typeof value === "number"
+      ) {
+        (state.currentMaterial[name] as number) = value;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllMaterial.fulfilled, (state, action) => {
@@ -83,27 +99,28 @@ export const materialSlice = createSlice({
         state.currentMaterial = action.payload;
       })
       .addCase(createMaterial.fulfilled, (state, action) => {
-        const newMaterial = [action.payload, ...state.material];
         state.loading = false;
-        state.material = newMaterial;
+        state.material.unshift(action.payload);
       })
       .addCase(editMaterial.fulfilled, (state, action) => {
-        const updatedMaterial = state.material.map((material) =>
-          material.id === action.payload.id ? action.payload : material
-        );
         state.loading = false;
-        state.material = updatedMaterial;
+        const index = state.material.findIndex(
+          (material) => material.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.material[index] = action.payload;
+        }
       })
       .addCase(deleteMaterial.fulfilled, (state, action) => {
-        const filterMaterial = state.material.filter(
+        state.loading = false;
+        state.material = state.material.filter(
           (material) => material.id !== action.payload
         );
-        state.loading = false;
-        state.material = filterMaterial;
       })
       .addMatcher(
         (action) =>
-          action.type.endsWith("/pending") && action.type.includes("authSlice"),
+          action.type.endsWith("/pending") &&
+          action.type.includes("materialSlice"),
         (state) => {
           state.loading = true;
           state.failed = false;
@@ -112,7 +129,7 @@ export const materialSlice = createSlice({
       .addMatcher(
         (action) =>
           action.type.endsWith("/rejected") &&
-          action.type.includes("authSlice"),
+          action.type.includes("materialSlice"),
         (state) => {
           state.loading = false;
           state.failed = true;
@@ -121,4 +138,5 @@ export const materialSlice = createSlice({
   },
 });
 
+export const { setCurrentMat } = materialSlice.actions;
 export default materialSlice.reducer;
