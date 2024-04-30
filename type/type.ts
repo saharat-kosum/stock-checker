@@ -25,3 +25,8 @@ export interface Material {
   createDate: Date;
   modifyDate: Date;
 }
+
+export enum EnumMode {
+  Create = "Create",
+  Edit = "Edit",
+}
