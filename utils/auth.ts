@@ -1,7 +1,6 @@
-import { jwtVerify, SignJWT } from "jose";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { JWTExpired } from "jose/errors";
 import { cookies } from "next/headers";
-import axios from "axios";
 
 export function getAccessKey() {
   const secret = process.env.ACCESS_TOKEN_SECRET;
@@ -25,34 +24,53 @@ export function getRefreshKey() {
   return enc;
 }
 
-export async function verifyToken() {
+export async function verifyToken(): Promise<JWTPayload | null> {
   const token = cookies().get("accessToken");
-  if (token && token.value) {
-    try {
-      const secretKey = getAccessKey();
-      const { payload } = await jwtVerify(token.value, secretKey);
-      return payload;
-    } catch (error) {
-      if (error instanceof JWTExpired) {
-        try {
-          const response = await axios.post("/api/token/refresh");
-          if (response.status === 200) {
-            return verifyToken();
-          } else {
-            console.error("Refresh Token failed :", response.data);
-            return null;
-          }
-        } catch (error) {
-          console.error("Refresh Token failed :", error);
-          return null;
-        }
-      } else {
-        console.error("Verify JWT Token failed :", error);
-        return null;
-      }
+  if (!token || !token.value) {
+    console.log("No access token found");
+    return null;
+  }
+
+  try {
+    const secretKey = getAccessKey();
+    const { payload } = await jwtVerify(token.value, secretKey);
+    return payload;
+  } catch (error) {
+    if (error instanceof JWTExpired) {
+      return await refreshTokenAndVerify(token.value);
+    } else {
+      return null;
     }
-  } else {
-    console.log("No token");
+  }
+}
+
+async function refreshTokenAndVerify(
+  token: string
+): Promise<JWTPayload | null> {
+  try {
+    const refreshToken = cookies().get("refreshToken");
+    if (!refreshToken || !refreshToken.value) {
+      console.log("No refresh token found");
+      return null;
+    }
+
+    const prefixUrl = process.env.PREFIX_URL;
+    const response = await fetch(`${prefixUrl}/api/token/refresh`, {
+      method: "POST",
+      headers: {
+        Cookie: `accessToken=${token}; refreshToken=${refreshToken.value}`,
+      },
+    });
+
+    if (response.ok) {
+      return await verifyToken();
+    } else {
+      const result = await response.json();
+      console.error("Refresh Token failed:", result);
+      return null;
+    }
+  } catch (error) {
+    console.error("Refresh Token failed:", error);
     return null;
   }
 }

@@ -17,7 +17,8 @@ export async function middleware(request: NextRequest) {
     const condition =
       pathname.includes("/login") ||
       pathname.includes("/balance") ||
-      pathname.includes("/register");
+      pathname.includes("/register") ||
+      pathname.includes("/refresh");
 
     if (condition) {
       return NextResponse.next();
