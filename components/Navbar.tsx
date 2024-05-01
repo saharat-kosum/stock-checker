@@ -22,7 +22,7 @@ function Navbar() {
   };
 
   return (
-    <div className="navbar bg-base-100 drop-shadow-lg">
+    <main className="navbar bg-base-100 drop-shadow-lg">
       <div className="flex-1">
         <Link href="/admin" className="btn btn-ghost text-xl">
           Home
@@ -37,7 +37,7 @@ function Navbar() {
           {isLoading ? <Spinner size="md" /> : "Log out"}
         </button>
       </div>
-    </div>
+    </main>
   );
 }
 

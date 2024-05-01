@@ -62,6 +62,10 @@ function MaterialManage({ mode }: MaterialManageProps) {
     }
   };
 
+  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    (e.target as HTMLInputElement).blur();
+  };
+
   return (
     <main className="hero mt-8">
       <div className="hero-content text-center">
@@ -88,6 +92,7 @@ function MaterialManage({ mode }: MaterialManageProps) {
                     onChange={(e) => handleChange(e, input.type, input.name)}
                     value={currentMat[input.name].toString()}
                     className="input input-bordered w-full"
+                    onWheel={(e) => handleWheel(e)}
                   />
                 </label>
               ))}

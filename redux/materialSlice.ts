@@ -20,7 +20,7 @@ const defaultMaterial: Material = {
 
 const initialState: MaterialInitialState = {
   loading: false,
-  material: [],
+  material: [defaultMaterial, defaultMaterial],
   currentMaterial: { ...defaultMaterial },
   failed: false,
 };

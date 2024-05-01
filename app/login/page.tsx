@@ -54,6 +54,7 @@ function AdminLogin() {
                   placeholder="Username"
                   className="input input-bordered"
                   name="email"
+                  autoComplete="off"
                   onChange={(e) => handleChange(e)}
                   required
                 />
@@ -67,6 +68,7 @@ function AdminLogin() {
                   placeholder="Password"
                   className="input input-bordered"
                   name="password"
+                  autoComplete="current-password"
                   onChange={(e) => handleChange(e)}
                   required
                 />
