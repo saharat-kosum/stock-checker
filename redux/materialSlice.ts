@@ -1,6 +1,6 @@
 import { CurrentPayload, Material, MaterialInitialState } from "@/type/type";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../config/axios";
 
 const defaultMaterial: Material = {
   id: "",

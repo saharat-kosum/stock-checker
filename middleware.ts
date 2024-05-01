@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "./utils/auth";
+import { hasAccessToken, verifyToken } from "./utils/auth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/admin")) {
-    const token = await verifyToken();
-    if (token) {
+    const hasToken = hasAccessToken();
+    if (hasToken) {
       return NextResponse.next();
     } else {
       return NextResponse.redirect(new URL("/login", request.url));
