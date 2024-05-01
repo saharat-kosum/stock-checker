@@ -44,7 +44,10 @@ export async function POST() {
     cookies().set("refreshToken", newRefreshToken, {
       httpOnly: true,
     });
-    return Response.json({ message: "Refresh Token success" });
+    return Response.json({
+      message: "Refresh Token success",
+      accessToken: accessToken,
+    });
   } catch (error) {
     console.error("Refresh token failed: ", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });

@@ -63,7 +63,10 @@ async function refreshTokenAndVerify(
     });
 
     if (response.ok) {
-      return await verifyToken();
+      const data = await response.json();
+      const secretKey = getAccessKey();
+      const { payload } = await jwtVerify(data.accessToken, secretKey);
+      return payload;
     } else {
       const result = await response.json();
       console.error("Refresh Token failed:", result);
@@ -82,7 +85,7 @@ export async function createAccessToken(userId: string) {
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("3h")
+    .setExpirationTime("5s")
     .sign(key);
 
   return token;
