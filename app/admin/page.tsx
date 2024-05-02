@@ -9,6 +9,8 @@ import ThreeDots from "@/components/icon/ThreeDots";
 import Spinner from "@/components/Spinner";
 import { SelectArray, SelectState } from "@/type/type";
 import Pagination from "@/components/Pagination";
+import QrModal from "@/components/QrModal";
+import QrCode from "@/components/icon/QrCode";
 
 const selectArray: SelectArray[] = [
   {
@@ -126,7 +128,7 @@ function Admin() {
         </div>
       ) : (
         <div className="overflow-x-auto mt-6">
-          <table className="table">
+          <table className="table table-pin-rows mb-12">
             {/* head */}
             <thead>
               <tr className="text-center">
@@ -141,6 +143,7 @@ function Admin() {
                 <th>คงเหลือ</th>
                 <th>ยอดตรวจนับ</th>
                 <th>หมายเหตุ</th>
+                <th>QR Code</th>
                 <th></th>
               </tr>
             </thead>
@@ -158,6 +161,22 @@ function Admin() {
                   <td>{material.balance}</td>
                   <td>{material.stockCount}</td>
                   <td>{material.note}</td>
+                  <td>
+                    <button
+                      className="btn btn-ghost btn-sm btn-circle"
+                      onClick={() => {
+                        const modal = document.getElementById(
+                          "QR_Modal"
+                        ) as HTMLDialogElement | null;
+                        if (modal) {
+                          modal.showModal();
+                        }
+                      }}
+                    >
+                      <QrCode />
+                    </button>
+                    <QrModal />
+                  </td>
                   <td>
                     <div className="dropdown dropdown-left">
                       <div
@@ -184,15 +203,15 @@ function Admin() {
               ))}
             </tbody>
           </table>
-          <div className="text-end mt-6">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={15}
-              onPageChange={setCurrentPage}
-            />
-          </div>
         </div>
       )}
+      <div className="text-end mt-1">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={7}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   );
 }

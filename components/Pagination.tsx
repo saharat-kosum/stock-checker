@@ -34,23 +34,19 @@ const Pagination = ({
         pageNumbers.push(1);
         // Add '...' and last 5 pages
         pageNumbers.push(-1);
-        for (let i = totalPages - 4; i <= totalPages; i++) {
+        for (let i = totalPages - 3; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
       }
       // Otherwise, display current page and 2 pages before and after it
       else {
         pageNumbers.push(1);
-        if (currentPage !== 4) {
-          pageNumbers.push(-1);
-        }
+        pageNumbers.push(-1);
         // Add '...' and 2 pages before and after current page
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pageNumbers.push(i);
         }
-        if (currentPage < totalPages - 3) {
-          pageNumbers.push(-1);
-        }
+        pageNumbers.push(-1);
         pageNumbers.push(totalPages);
       }
     }
@@ -66,8 +62,8 @@ const Pagination = ({
         {pageNumbers.map((pageNumber, index) => (
           <button
             key={index}
-            className={`join-item btn ${
-              pageNumber > 0 ? "btn-md" : "btn-disabled"
+            className={`join-item btn btn-sm ${
+              pageNumber > 0 ? "" : "btn-disabled"
             } ${pageNumber === currentPage ? "btn-active" : ""}`}
             onClick={() => {
               if (pageNumber > 0) onPageChange(pageNumber);
