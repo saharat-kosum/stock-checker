@@ -8,6 +8,7 @@ import { getAllMaterial } from "@/redux/materialSlice";
 import ThreeDots from "@/components/icon/ThreeDots";
 import Spinner from "@/components/Spinner";
 import { SelectArray, SelectState } from "@/type/type";
+import Pagination from "@/components/Pagination";
 
 const selectArray: SelectArray[] = [
   {
@@ -49,10 +50,9 @@ const selectArray: SelectArray[] = [
 function Admin() {
   const isLoading = useAppSelector((state) => state.material.loading);
   const materialList = useAppSelector((state) => state.material.material);
+  const totalPages = useAppSelector((state) => state.material.totalPages);
   const dispatch = useDispatch<AppDispatch>();
   const [search, setSearch] = useState("");
-  const [totalPages, setTotalPages] = useState(1);
-  const [itemsPerPage, setItemPerPage] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
   const [select, setSelect] = useState<SelectState>({
     order: "ASC",
@@ -184,12 +184,12 @@ function Admin() {
               ))}
             </tbody>
           </table>
-          <div className="join">
-            <button className="join-item btn btn-md">1</button>
-            <button className="join-item btn btn-md btn-active">2</button>
-            <button className="join-item btn btn-disabled">...</button>
-            <button className="join-item btn btn-md">3</button>
-            <button className="join-item btn btn-md">4</button>
+          <div className="text-end mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={15}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       )}

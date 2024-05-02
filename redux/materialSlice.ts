@@ -23,6 +23,7 @@ const initialState: MaterialInitialState = {
   material: [defaultMaterial, defaultMaterial],
   currentMaterial: { ...defaultMaterial },
   failed: false,
+  totalPages: 1,
 };
 
 export const getAllMaterial = createAsyncThunk(
