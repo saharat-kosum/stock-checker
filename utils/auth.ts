@@ -46,7 +46,7 @@ export async function createAccessToken(userId: string) {
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("5s")
+    .setExpirationTime("3h")
     .sign(key);
 
   return token;

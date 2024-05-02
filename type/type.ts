@@ -42,3 +42,20 @@ export interface InputArray {
   class: string;
   display: string;
 }
+
+export interface SelectArray {
+  display: string;
+  name: keyof SelectState;
+  optionArray: OptionArray[];
+}
+
+export interface OptionArray {
+  display: string;
+  value: string;
+}
+
+export interface SelectState {
+  order: string;
+  sort: string;
+  itemsPerPage: string;
+}

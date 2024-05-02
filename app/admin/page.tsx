@@ -1,21 +1,76 @@
 "use client";
 import Plus from "@/components/icon/Plus";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { getAllMaterial } from "@/redux/materialSlice";
 import ThreeDots from "@/components/icon/ThreeDots";
 import Spinner from "@/components/Spinner";
+import { SelectArray, SelectState } from "@/type/type";
+
+const selectArray: SelectArray[] = [
+  {
+    display: "ลำดับ",
+    name: "order",
+    optionArray: [
+      { display: "A-Z", value: "ASC" },
+      { display: "Z-A", value: "DESC" },
+    ],
+  },
+  {
+    display: "เรียงตาม",
+    name: "sort",
+    optionArray: [
+      { display: "Sloc", value: "sloc" },
+      { display: "Material Code", value: "code" },
+      { display: "รายการ", value: "name" },
+      { display: "หน่วย", value: "unit" },
+      { display: "ยอดยกมา", value: "bringForward" },
+      { display: "รับ", value: "stockIn" },
+      { display: "จ่าย", value: "stockOut" },
+      { display: "คงเหลือ", value: "balance" },
+      { display: "ยอดตรวจนับ", value: "stockCount" },
+    ],
+  },
+  {
+    display: "จำนวนแถว",
+    name: "itemsPerPage",
+    optionArray: [
+      { display: "20", value: "20" },
+      { display: "50", value: "50" },
+      { display: "100", value: "100" },
+      { display: "500", value: "500" },
+      { display: "1000", value: "1000" },
+    ],
+  },
+];
 
 function Admin() {
   const isLoading = useAppSelector((state) => state.material.loading);
   const materialList = useAppSelector((state) => state.material.material);
   const dispatch = useDispatch<AppDispatch>();
+  const [search, setSearch] = useState("");
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage, setItemPerPage] = useState(20);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [select, setSelect] = useState<SelectState>({
+    order: "ASC",
+    sort: "name",
+    itemsPerPage: "50",
+  });
 
   // useEffect(() => {
   //   dispatch(getAllMaterial());
   // }, []);
+
+  const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setSelect((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   return (
     <div className="container mx-auto mt-10 p-2">
@@ -26,7 +81,7 @@ function Admin() {
           <p className="hidden sm:block">Add new material</p>
         </Link>
       </div>
-      <div className="flex mt-6 justify-between flex-col gap-4 sm:flex-row sm:items-center">
+      <div className="flex mt-6 justify-between flex-col gap-4 sm:flex-row sm:items-end">
         <label className="input input-bordered flex items-center gap-2">
           <input type="text" className="grow" placeholder="Search" />
           <svg
@@ -43,27 +98,26 @@ function Admin() {
             />
           </svg>
         </label>
-        <div className="flex gap-6 sm:w-60">
-          <select className="select select-bordered select-sm w-full max-w-xs">
-            <option value={0} defaultValue={0}>
-              sort by
-            </option>
-            <option>20</option>
-            <option>50</option>
-            <option>100</option>
-            <option>500</option>
-            <option>1000</option>
-          </select>
-          <select className="select select-bordered select-sm w-full max-w-xs">
-            <option value={0} defaultValue={0}>
-              count
-            </option>
-            <option>20</option>
-            <option>50</option>
-            <option>100</option>
-            <option>500</option>
-            <option>1000</option>
-          </select>
+        <div className="flex gap-6 sm:w-80">
+          {selectArray.map((selects, index) => (
+            <label className="form-control w-full max-w-xs" key={index}>
+              <div className="label p-1">
+                <span className="label-text-alt">{selects.display}</span>
+              </div>
+              <select
+                className="select select-bordered select-sm w-full max-w-xs"
+                onChange={(e) => selectChange(e)}
+                value={select[selects.name]}
+                name={selects.name}
+              >
+                {selects.optionArray.map((option, index) => (
+                  <option value={option.value} key={index}>
+                    {option.display}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
         </div>
       </div>
       {isLoading ? (
