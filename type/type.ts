@@ -23,8 +23,8 @@ export interface Material {
   balance: number;
   stockCount: number;
   note: string;
-  createDate: Date;
-  modifyDate: Date;
+  createDate: string;
+  modifyDate: string;
 }
 
 export enum EnumMode {

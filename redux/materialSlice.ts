@@ -14,13 +14,13 @@ const defaultMaterial: Material = {
   balance: 0,
   stockCount: 0,
   note: "",
-  createDate: new Date(),
-  modifyDate: new Date(),
+  createDate: "",
+  modifyDate: "",
 };
 
 const initialState: MaterialInitialState = {
   loading: false,
-  material: [defaultMaterial, defaultMaterial],
+  material: [],
   currentMaterial: { ...defaultMaterial },
   failed: false,
   totalPages: 1,
@@ -29,7 +29,7 @@ const initialState: MaterialInitialState = {
 export const getAllMaterial = createAsyncThunk(
   "materialSlice/getAllMaterial",
   async () => {
-    const { data } = await axios.get("/api/admin/material");
+    const { data } = await axios.get("/api/material");
     return data;
   }
 );
@@ -37,7 +37,7 @@ export const getAllMaterial = createAsyncThunk(
 export const getMaterial = createAsyncThunk(
   "materialSlice/getMaterial",
   async (id: string) => {
-    const { data } = await axios.get(`/api/admin/material/${id}`);
+    const { data } = await axios.get(`/api/material/${id}`);
     return data;
   }
 );
@@ -45,7 +45,7 @@ export const getMaterial = createAsyncThunk(
 export const createMaterial = createAsyncThunk(
   "materialSlice/createMaterial",
   async (material: Material) => {
-    const { data } = await axios.post("/api/admin/material", material);
+    const { data } = await axios.post("/api/material", material);
     return data;
   }
 );
@@ -53,10 +53,7 @@ export const createMaterial = createAsyncThunk(
 export const editMaterial = createAsyncThunk(
   "materialSlice/editMaterial",
   async (material: Material) => {
-    const { data } = await axios.put(
-      `/api/admin/material/${material.id}`,
-      material
-    );
+    const { data } = await axios.put(`/api/material/${material.id}`, material);
     return data;
   }
 );
@@ -64,7 +61,7 @@ export const editMaterial = createAsyncThunk(
 export const deleteMaterial = createAsyncThunk(
   "materialSlice/deleteMaterial",
   async (id: string) => {
-    const { data } = await axios.delete(`/api/admin/material/${id}`);
+    const { data } = await axios.delete(`/api/material/${id}`);
     return data;
   }
 );

@@ -62,9 +62,14 @@ function Admin() {
     itemsPerPage: "50",
   });
 
-  // useEffect(() => {
-  //   dispatch(getAllMaterial());
-  // }, []);
+  useEffect(() => {
+    // add search in query but not []
+    dispatch(getAllMaterial());
+  }, []);
+
+  const searchHandle = () => {
+    dispatch(getAllMaterial());
+  };
 
   const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -175,7 +180,7 @@ function Admin() {
                     >
                       <QrCode />
                     </button>
-                    <QrModal />
+                    <QrModal material={material} />
                   </td>
                   <td>
                     <div className="dropdown dropdown-left">
@@ -191,10 +196,10 @@ function Admin() {
                         className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-36"
                       >
                         <li>
-                          <a>Item 1</a>
+                          <Link href={`/material/${material.id}`}>Edit</Link>
                         </li>
                         <li>
-                          <a>Item 2</a>
+                          <div>Delete</div>
                         </li>
                       </ul>
                     </div>
@@ -208,7 +213,7 @@ function Admin() {
       <div className="text-end mt-1">
         <Pagination
           currentPage={currentPage}
-          totalPages={7}
+          totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
       </div>
