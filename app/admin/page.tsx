@@ -1,6 +1,6 @@
 "use client";
 import Plus from "@/components/icon/Plus";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
@@ -78,6 +78,7 @@ function Admin() {
   };
 
   const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentPage(1);
     const { name, value } = event.target;
     setSelect((prevData) => ({
       ...prevData,
@@ -178,7 +179,10 @@ function Admin() {
             <tbody>
               {materialList.map((material, index) => (
                 <tr className="text-center" key={index}>
-                  <th>{index + 1}</th>
+                  <th>
+                    {parseInt(select.itemsPerPage) * (currentPage - 1) +
+                      (index + 1)}
+                  </th>
                   <td>{material.sloc}</td>
                   <td>{material.code}</td>
                   <td>{material.name}</td>

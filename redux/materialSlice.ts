@@ -6,6 +6,7 @@ import {
 } from "@/type/type";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../config/axios";
+import * as XLSX from "xlsx";
 
 const defaultMaterial: Material = {
   id: "",
@@ -83,8 +84,30 @@ export const deleteMaterial = createAsyncThunk(
 export const excelEdit = createAsyncThunk(
   "materialSlice/editMaterialByExcel",
   async (file: File) => {
-    const { data } = await axios.post("/api/material/excel", file);
-    return data;
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const data = e.target?.result;
+        if (data) {
+          const workbook = XLSX.read(new Uint8Array(data as ArrayBuffer), {
+            type: "array",
+          });
+          // SheetName
+          const sheetName = workbook.SheetNames[0];
+          // Worksheet
+          const workSheet = workbook.Sheets[sheetName];
+          // Json
+          const json = XLSX.utils.sheet_to_json(workSheet);
+          try {
+            const response = await axios.post("/api/material/excel", json);
+            resolve(response.data);
+          } catch (error) {
+            reject(error);
+          }
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
   }
 );
 
