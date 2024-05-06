@@ -1,11 +1,21 @@
 "use client";
 
 import LeftArrow from "@/components/icon/LeftArrow";
-import { useState } from "react";
+import { AppDispatch } from "@/redux/Store";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
+import { useDispatch } from "react-redux";
+import { setFailed } from "@/redux/materialSlice";
 
 export default function Home() {
   const [cameraOpen, setCameraOpen] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(setFailed());
+  }, [dispatch]);
 
   const cameraToggle = () => {
     setCameraOpen(!cameraOpen);
@@ -13,7 +23,7 @@ export default function Home() {
 
   const handleScan = (data: any) => {
     if (data) {
-      console.log(data);
+      router.push(data);
     }
   };
 

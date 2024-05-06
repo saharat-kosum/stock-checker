@@ -6,6 +6,7 @@ import { EnumMode } from "@/type/type";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
+import { getMaterial } from "@/redux/materialSlice";
 
 function EditMaterial() {
   const params = useParams();
@@ -13,9 +14,9 @@ function EditMaterial() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    // dispatch(getMaterial(params.id))
-    console.log(params.id);
-  }, [params.id]);
+    const url = `/api/material/${params.id}`;
+    dispatch(getMaterial(url));
+  }, [params.id, dispatch]);
 
   return <MaterialManage mode={mode} />;
 }

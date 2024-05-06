@@ -1,4 +1,9 @@
-import { CurrentPayload, Material, MaterialInitialState } from "@/type/type";
+import {
+  CurrentPayload,
+  GetMaterialProps,
+  Material,
+  MaterialInitialState,
+} from "@/type/type";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../config/axios";
 
@@ -28,16 +33,24 @@ const initialState: MaterialInitialState = {
 
 export const getAllMaterial = createAsyncThunk(
   "materialSlice/getAllMaterial",
-  async () => {
-    const { data } = await axios.get("/api/material");
+  async ({ select, currentPage, search }: GetMaterialProps) => {
+    const { data } = await axios.get(`/api/material`, {
+      params: {
+        currentpage: currentPage,
+        search,
+        orderby: select.order,
+        sort: select.sort,
+        itemperpage: select.itemsPerPage,
+      },
+    });
     return data;
   }
 );
 
 export const getMaterial = createAsyncThunk(
   "materialSlice/getMaterial",
-  async (id: string) => {
-    const { data } = await axios.get(`/api/material/${id}`);
+  async (url: string) => {
+    const { data } = await axios.get(`${url}`);
     return data;
   }
 );
@@ -85,12 +98,16 @@ export const materialSlice = createSlice({
         (state.currentMaterial[name] as number) = value;
       }
     },
+    setFailed: (state) => {
+      state.failed = false;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllMaterial.fulfilled, (state, action) => {
         state.loading = false;
-        state.material = action.payload;
+        state.material = action.payload.materials;
+        state.totalPages = action.payload.totalPages;
       })
       .addCase(getMaterial.fulfilled, (state, action) => {
         state.loading = false;
@@ -99,6 +116,7 @@ export const materialSlice = createSlice({
       .addCase(createMaterial.fulfilled, (state, action) => {
         state.loading = false;
         state.material.unshift(action.payload);
+        state.currentMaterial = { ...defaultMaterial };
       })
       .addCase(editMaterial.fulfilled, (state, action) => {
         state.loading = false;
@@ -112,7 +130,7 @@ export const materialSlice = createSlice({
       .addCase(deleteMaterial.fulfilled, (state, action) => {
         state.loading = false;
         state.material = state.material.filter(
-          (material) => material.id !== action.payload
+          (material) => material.id !== action.payload.id
         );
       })
       .addMatcher(
@@ -136,5 +154,5 @@ export const materialSlice = createSlice({
   },
 });
 
-export const { setCurrentMat } = materialSlice.actions;
+export const { setCurrentMat, setFailed } = materialSlice.actions;
 export default materialSlice.reducer;

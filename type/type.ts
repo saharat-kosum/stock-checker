@@ -60,3 +60,9 @@ export interface SelectState {
   sort: string;
   itemsPerPage: string;
 }
+
+export interface GetMaterialProps {
+  select: SelectState;
+  currentPage: number;
+  search: string;
+}

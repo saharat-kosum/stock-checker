@@ -9,6 +9,7 @@ import {
 import { EnumMode, InputArray, Material } from "@/type/type";
 import React from "react";
 import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
 
 const inputArray: InputArray[] = [
   { name: "sloc", class: "max-w-xs", type: "number", display: "Sloc" },
@@ -55,10 +56,25 @@ function MaterialManage({ mode }: MaterialManageProps) {
   };
 
   const submitHandle = async () => {
+    let res;
     if (mode === EnumMode.Create) {
-      await dispatch(createMaterial(currentMat));
+      res = await dispatch(createMaterial(currentMat));
     } else if (mode === EnumMode.Edit) {
-      await dispatch(editMaterial(currentMat));
+      res = await dispatch(editMaterial(currentMat));
+    }
+
+    if (res?.payload) {
+      Swal.fire({
+        title: "Success!",
+        text: `${mode} success!`,
+        icon: "success",
+      });
+    } else {
+      Swal.fire({
+        title: "Failed!",
+        text: `${mode} failed!`,
+        icon: "error",
+      });
     }
   };
 

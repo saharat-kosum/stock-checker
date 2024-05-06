@@ -13,7 +13,7 @@ function QrModal({ material }: QrProps) {
       <div className="modal-box">
         <h3 className="font-bold text-lg">QR Code</h3>
         <div className="flex justify-center pt-6">
-          <QRCode value={`${prefix}/api/material/${material.id}`} />
+          <QRCode value={`${prefix}/balance/${material.id}`} />
         </div>
         <p className="py-4">{material.name}</p>
         <div className="modal-action">

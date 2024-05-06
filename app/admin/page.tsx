@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { getAllMaterial } from "@/redux/materialSlice";
+import { deleteMaterial, getAllMaterial } from "@/redux/materialSlice";
 import ThreeDots from "@/components/icon/ThreeDots";
 import Spinner from "@/components/Spinner";
 import { SelectArray, SelectState } from "@/type/type";
@@ -63,12 +63,16 @@ function Admin() {
   });
 
   useEffect(() => {
-    // add search in query but not []
-    dispatch(getAllMaterial());
-  }, []);
+    searchHandle();
+  }, [select, currentPage]);
 
-  const searchHandle = () => {
-    dispatch(getAllMaterial());
+  const searchHandle = async () => {
+    const props = {
+      select,
+      currentPage,
+      search,
+    };
+    await dispatch(getAllMaterial(props));
   };
 
   const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -77,6 +81,10 @@ function Admin() {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const deleteHandle = async (id: string) => {
+    await dispatch(deleteMaterial(id));
   };
 
   return (
@@ -90,13 +98,18 @@ function Admin() {
       </div>
       <div className="flex mt-6 justify-between flex-col gap-4 sm:flex-row sm:items-end">
         <label className="input input-bordered flex items-center gap-2">
-          <input type="text" className="grow" placeholder="Search" />
+          <input
+            type="text"
+            className="grow"
+            placeholder="Search"
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
             fill="currentColor"
             className="w-4 h-4 opacity-70 hover:cursor-pointer"
-            onClick={() => console.log("test")}
+            onClick={() => searchHandle()}
           >
             <path
               fillRule="evenodd"
@@ -196,10 +209,14 @@ function Admin() {
                         className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-36"
                       >
                         <li>
-                          <Link href={`/material/${material.id}`}>Edit</Link>
+                          <Link href={`/admin/material/${material.id}`}>
+                            Edit
+                          </Link>
                         </li>
                         <li>
-                          <div>Delete</div>
+                          <div onClick={() => deleteHandle(material.id)}>
+                            Delete
+                          </div>
                         </li>
                       </ul>
                     </div>
