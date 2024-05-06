@@ -33,7 +33,7 @@ const initialState: MaterialInitialState = {
 
 export const getAllMaterial = createAsyncThunk(
   "materialSlice/getAllMaterial",
-  async ({ select, currentPage, search }: GetMaterialProps) => {
+  async ({ select, currentPage, search, all }: GetMaterialProps) => {
     const { data } = await axios.get(`/api/material`, {
       params: {
         currentpage: currentPage,
@@ -41,6 +41,7 @@ export const getAllMaterial = createAsyncThunk(
         orderby: select.order,
         sort: select.sort,
         itemperpage: select.itemsPerPage,
+        all,
       },
     });
     return data;

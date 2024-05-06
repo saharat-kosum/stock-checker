@@ -11,6 +11,7 @@ import { SelectArray, SelectState } from "@/type/type";
 import Pagination from "@/components/Pagination";
 import QrModal from "@/components/QrModal";
 import QrCode from "@/components/icon/QrCode";
+import ExportBtn from "@/components/ExportBtn";
 
 const selectArray: SelectArray[] = [
   {
@@ -71,6 +72,7 @@ function Admin() {
       select,
       currentPage,
       search,
+      all: false,
     };
     await dispatch(getAllMaterial(props));
   };
@@ -91,6 +93,12 @@ function Admin() {
     <div className="container mx-auto mt-10 p-2">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">List of Material</h1>
+        <ExportBtn
+          select={select}
+          currentPage={currentPage}
+          search={search}
+          all={true}
+        />
         <Link href="/admin/material" className="btn btn-primary btn-sm">
           <Plus />
           <p className="hidden sm:block">Add new material</p>

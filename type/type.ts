@@ -65,4 +65,5 @@ export interface GetMaterialProps {
   select: SelectState;
   currentPage: number;
   search: string;
+  all: boolean;
 }

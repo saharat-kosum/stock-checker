@@ -11,14 +11,15 @@ export async function GET(request: NextRequest) {
     const orderby = searchParams.get("orderby");
     const sort = searchParams.get("sort");
     const itemperpage = parseInt(searchParams.get("itemperpage") || "10");
+    const getAll = searchParams.get("all");
 
     const skip = (currentpage - 1) * itemperpage;
     const order = orderby === "ASC" ? "asc" : "desc";
     const orderBy = sort ? { [sort]: order } : undefined;
 
     const materials = await prisma.material.findMany({
-      skip,
-      take: itemperpage,
+      skip: getAll === "true" ? undefined : skip,
+      take: getAll === "true" ? undefined : itemperpage,
       where: {
         name: { contains: search },
       },
@@ -66,6 +67,6 @@ export async function POST(request: Request) {
     return Response.json(newMaterial, { status: 201 });
   } catch (error) {
     console.error("Create Material error: ", error);
-    Response.json({ error: "Internal server error" }, { status: 500 });
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
