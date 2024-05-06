@@ -80,6 +80,14 @@ export const deleteMaterial = createAsyncThunk(
   }
 );
 
+export const excelEdit = createAsyncThunk(
+  "materialSlice/editMaterialByExcel",
+  async (file: File) => {
+    const { data } = await axios.post("/api/material/excel", file);
+    return data;
+  }
+);
+
 export const materialSlice = createSlice({
   name: "material",
   initialState,
@@ -133,6 +141,9 @@ export const materialSlice = createSlice({
         state.material = state.material.filter(
           (material) => material.id !== action.payload.id
         );
+      })
+      .addCase(excelEdit.fulfilled, (state) => {
+        state.loading = false;
       })
       .addMatcher(
         (action) =>

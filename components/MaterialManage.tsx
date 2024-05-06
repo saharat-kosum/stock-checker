@@ -4,10 +4,11 @@ import { AppDispatch, useAppSelector } from "@/redux/Store";
 import {
   createMaterial,
   editMaterial,
+  excelEdit,
   setCurrentMat,
 } from "@/redux/materialSlice";
 import { EnumMode, InputArray, Material } from "@/type/type";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 
@@ -41,6 +42,7 @@ function MaterialManage({ mode }: MaterialManageProps) {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector((state) => state.material.loading);
   const currentMat = useAppSelector((state) => state.material.currentMaterial);
+  const [file, setFile] = useState<File | null>(null);
 
   const handleChange = (
     event:
@@ -57,7 +59,9 @@ function MaterialManage({ mode }: MaterialManageProps) {
 
   const submitHandle = async () => {
     let res;
-    if (mode === EnumMode.Create) {
+    if (file) {
+      res = await dispatch(excelEdit(file));
+    } else if (mode === EnumMode.Create) {
       res = await dispatch(createMaterial(currentMat));
     } else if (mode === EnumMode.Edit) {
       res = await dispatch(editMaterial(currentMat));
@@ -126,6 +130,16 @@ function MaterialManage({ mode }: MaterialManageProps) {
               </label>
             </div>
           )}
+          <div className="flex mt-6">
+            <input
+              type="file"
+              className="file-input file-input-bordered file-input-sm w-full max-w-xs"
+              accept=".xls,.xlsx"
+              onChange={(e) =>
+                setFile(e.target.files ? e.target.files[0] : null)
+              }
+            />
+          </div>
           <button
             className={`btn btn-block mt-6 ${
               mode === EnumMode.Create ? "btn-neutral" : "btn-accent"

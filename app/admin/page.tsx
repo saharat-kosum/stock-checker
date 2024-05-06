@@ -93,16 +93,18 @@ function Admin() {
     <div className="container mx-auto mt-10 p-2">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">List of Material</h1>
-        <ExportBtn
-          select={select}
-          currentPage={currentPage}
-          search={search}
-          all={true}
-        />
-        <Link href="/admin/material" className="btn btn-primary btn-sm">
-          <Plus />
-          <p className="hidden sm:block">Add new material</p>
-        </Link>
+        <div className="flex gap-4 items-center">
+          <ExportBtn
+            select={select}
+            currentPage={currentPage}
+            search={search}
+            all={true}
+          />
+          <Link href="/admin/material" className="btn btn-primary btn-sm">
+            <Plus />
+            <p className="hidden sm:block">Add new material</p>
+          </Link>
+        </div>
       </div>
       <div className="flex mt-6 justify-between flex-col gap-4 sm:flex-row sm:items-end">
         <label className="input input-bordered flex items-center gap-2">

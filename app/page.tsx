@@ -50,7 +50,7 @@ export default function Home() {
                   delay={1000}
                   onError={handleError}
                   onScan={handleScan}
-                  style={{ width: "220px" }}
+                  className="w-56 sm:w-96"
                 />
               )}
             </div>
