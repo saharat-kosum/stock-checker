@@ -5,8 +5,8 @@ import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { getMaterial } from "@/redux/materialSlice";
 import { notFound } from "next/navigation";
-import Spinner from "@/components/Spinner";
 import BalanceModal from "@/components/BalanceModal";
+import Spinner from "@/components/Spinner";
 
 function BalaceCheck() {
   const params = useParams();

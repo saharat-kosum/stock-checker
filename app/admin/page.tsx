@@ -1,17 +1,17 @@
 "use client";
 import Plus from "@/components/icon/Plus";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { deleteMaterial, getAllMaterial } from "@/redux/materialSlice";
 import ThreeDots from "@/components/icon/ThreeDots";
-import Spinner from "@/components/Spinner";
 import { SelectArray, SelectState } from "@/type/type";
 import Pagination from "@/components/Pagination";
 import QrModal from "@/components/QrModal";
 import QrCode from "@/components/icon/QrCode";
 import ExportBtn from "@/components/ExportBtn";
+import Spinner from "@/components/Spinner";
 
 const selectArray: SelectArray[] = [
   {

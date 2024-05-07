@@ -1,5 +1,4 @@
 "use client";
-import Spinner from "@/components/Spinner";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import {
   createMaterial,
@@ -11,6 +10,7 @@ import { EnumMode, InputArray, Material } from "@/type/type";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
+import Spinner from "./Spinner";
 
 const inputArray: InputArray[] = [
   { name: "sloc", class: "max-w-xs", type: "number", display: "Sloc" },

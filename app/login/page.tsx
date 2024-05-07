@@ -3,7 +3,7 @@ import Spinner from "@/components/Spinner";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { login } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 function AdminLogin() {
