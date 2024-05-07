@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next build && next export"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "^5.2.1",
     "@prisma/client": "^5.13.0",
     "@reduxjs/toolkit": "^2.2.3",
     "@types/qrcode.react": "^1.0.5",
