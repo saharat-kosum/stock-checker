@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { logout } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
-import Spinner from "./Spinner";
+import Spin from "./icon/Spin";
 
 function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +34,7 @@ function Navbar() {
           disabled={isLoading}
           onClick={() => logoutHandle()}
         >
-          {isLoading ? <Spinner size="md" /> : "Log out"}
+          {isLoading ? <Spin size="md" /> : "Log out"}
         </button>
       </div>
     </main>

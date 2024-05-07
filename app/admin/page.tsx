@@ -11,7 +11,7 @@ import Pagination from "@/components/Pagination";
 import QrModal from "@/components/QrModal";
 import QrCode from "@/components/icon/QrCode";
 import ExportBtn from "@/components/ExportBtn";
-import Spinner from "@/components/Spinner";
+import Spin from "@/components/icon/Spin";
 
 const selectArray: SelectArray[] = [
   {
@@ -160,7 +160,7 @@ function Admin() {
       </div>
       {isLoading ? (
         <div className="min-w-60 min-h-96 hero-content mx-auto">
-          <Spinner size={"lg"} />
+          <Spin size={"lg"} />
         </div>
       ) : (
         <div className="overflow-x-auto mt-6">

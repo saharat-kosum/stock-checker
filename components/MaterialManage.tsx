@@ -10,7 +10,7 @@ import { EnumMode, InputArray, Material } from "@/type/type";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
-import Spinner from "./Spinner";
+import Spin from "./icon/Spin";
 
 const inputArray: InputArray[] = [
   { name: "sloc", class: "max-w-xs", type: "number", display: "Sloc" },
@@ -93,7 +93,7 @@ function MaterialManage({ mode }: MaterialManageProps) {
           <h1 className="text-3xl font-bold">{mode}</h1>
           {isLoading ? (
             <div className="min-w-60 min-h-96 hero-content">
-              <Spinner size="md" />
+              <Spin size="md" />
             </div>
           ) : (
             <div className="mt-6 grid grid-cols-2 gap-4">

@@ -1,5 +1,5 @@
 "use client";
-import Spinner from "@/components/Spinner";
+import Spin from "@/components/icon/Spin";
 import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { login } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
@@ -77,7 +77,7 @@ function AdminLogin() {
                 <p className="text-red-600">{error}</p>
                 <div className="form-control mt-2">
                   <button className="btn btn-primary" disabled={isLoading}>
-                    {isLoading ? <Spinner size="md" /> : "Login"}
+                    {isLoading ? <Spin size="md" /> : "Login"}
                   </button>
                 </div>
               </div>

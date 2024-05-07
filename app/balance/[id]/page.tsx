@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { getMaterial } from "@/redux/materialSlice";
 import { notFound } from "next/navigation";
 import BalanceModal from "@/components/BalanceModal";
-import Spinner from "@/components/Spinner";
+import Spin from "@/components/icon/Spin";
 
 function BalaceCheck() {
   const params = useParams();
@@ -38,7 +38,7 @@ function BalaceCheck() {
     <main className="hero min-h-screen">
       <div className="hero-content text-center">
         <div className="max-w-md">
-          <Spinner size={"lg"} />
+          <Spin size={"lg"} />
           <BalanceModal material={material} />
         </div>
       </div>
