@@ -9,6 +9,7 @@ export interface MaterialInitialState {
   currentMaterial: Material;
   failed: boolean;
   totalPages: number;
+  defaultMaterial: Material;
 }
 
 export interface Material {

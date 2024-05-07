@@ -9,7 +9,7 @@ interface QrProps {
 function QrModal({ material }: QrProps) {
   const prefix = process.env.NEXT_PUBLIC_PREFIX_URL;
   return (
-    <dialog id="QR_Modal" className="modal">
+    <dialog id="QR_Modal" className="modal text-center">
       <div className="modal-box">
         <h3 className="font-bold text-lg">QR Code</h3>
         <div className="flex justify-center pt-6">

@@ -54,6 +54,12 @@ function Admin() {
   const isLoading = useAppSelector((state) => state.material.loading);
   const materialList = useAppSelector((state) => state.material.material);
   const totalPages = useAppSelector((state) => state.material.totalPages);
+  const defaultMaterial = useAppSelector(
+    (state) => state.material.defaultMaterial
+  );
+  const [selectedMaterial, setSelectedMaterial] = useState({
+    ...defaultMaterial,
+  });
   const dispatch = useDispatch<AppDispatch>();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,8 +97,9 @@ function Admin() {
   };
 
   return (
-    <div className="container mx-auto mt-10 p-2">
+    <div className="container mx-auto my-10 p-2">
       <div className="flex justify-between items-center">
+        <QrModal material={selectedMaterial} />
         <h1 className="text-3xl font-bold">List of Material</h1>
         <div className="flex gap-4 items-center">
           <ExportBtn
@@ -197,6 +204,7 @@ function Admin() {
                     <button
                       className="btn btn-ghost btn-sm btn-circle"
                       onClick={() => {
+                        setSelectedMaterial(material);
                         const modal = document.getElementById(
                           "QR_Modal"
                         ) as HTMLDialogElement | null;
@@ -207,7 +215,6 @@ function Admin() {
                     >
                       <QrCode />
                     </button>
-                    <QrModal material={material} />
                   </td>
                   <td>
                     <div className="dropdown dropdown-left">
