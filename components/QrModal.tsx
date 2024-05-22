@@ -15,7 +15,8 @@ function QrModal({ material }: QrProps) {
         <div className="flex justify-center pt-6">
           <QRCode value={`${prefix}/balance/${material.id}`} />
         </div>
-        <p className="py-4">{material.name}</p>
+        <p className="mt-4 font-bold text-xl">{material.code}</p>
+        <p className="">{material.name}</p>
         <div className="modal-action">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
