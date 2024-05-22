@@ -11,7 +11,12 @@ function BalanceModal({ material }: BalanceModalProps) {
     <dialog id="Balance_Modal" className="modal">
       <div className="modal-box">
         {/* <h3 className="font-bold text-lg">ยอดคงเหลือ</h3> */}
-        <p className="py-4">{`${material.name} คงเหลือ ${material.balance}`}</p>
+        <h1 className="text-5xl font-bold mt-6">{`${material.code}`}</h1>
+        <br />
+        <h2 className="text-3xl font-semibold">{`${material.name}`}</h2>
+        <br />
+        <p className="text-4xl font-bold">{`คงเหลือ ${material.balance} ${material.unit}`}</p>
+        <br />
         <div className="modal-action">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
