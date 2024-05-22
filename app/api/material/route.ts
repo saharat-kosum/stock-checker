@@ -21,11 +21,15 @@ export async function GET(request: NextRequest) {
       skip: getAll === "true" ? undefined : skip,
       take: getAll === "true" ? undefined : itemperpage,
       where: {
-        name: { contains: search },
+        name: { contains: search, mode: "insensitive" },
       },
       orderBy,
     });
-    const totalMaterialsCount = await prisma.material.count();
+    const totalMaterialsCount = await prisma.material.count({
+      where: {
+        name: { contains: search, mode: "insensitive" },
+      },
+    });
     const totalPages = Math.ceil(totalMaterialsCount / itemperpage);
     return Response.json({ materials, totalPages });
   } catch (error) {
