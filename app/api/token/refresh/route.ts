@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/utils/db";
 import { cookies } from "next/headers";
 import {
   createAccessToken,
@@ -6,8 +6,6 @@ import {
   getRefreshKey,
 } from "@/utils/auth";
 import { jwtVerify } from "jose";
-
-const prisma = new PrismaClient();
 
 export async function POST() {
   try {

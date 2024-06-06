@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/utils/db";
 import { Material } from "@/type/type";
-
-const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   const excelData: Material[] = await request.json();

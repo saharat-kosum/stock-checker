@@ -74,10 +74,9 @@ function Admin() {
   }, [select, currentPage]);
 
   const searchHandle = async () => {
-    setCurrentPage(1);
     const props = {
       select,
-      currentPage: 1,
+      currentPage,
       search,
       all: false,
     };
@@ -96,6 +95,14 @@ function Admin() {
 
   const deleteHandle = async (id: string) => {
     await dispatch(deleteMaterial(id));
+  };
+
+  const searchLogic = () => {
+    if (currentPage === 1) {
+      searchHandle();
+    } else {
+      setCurrentPage(1);
+    }
   };
 
   return (
@@ -120,7 +127,7 @@ function Admin() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            searchHandle();
+            searchLogic();
           }}
         >
           <label className="input input-bordered flex items-center gap-2">
@@ -135,7 +142,9 @@ function Admin() {
               viewBox="0 0 16 16"
               fill="currentColor"
               className="w-4 h-4 opacity-70 hover:cursor-pointer"
-              onClick={() => searchHandle()}
+              onClick={() => {
+                searchLogic();
+              }}
             >
               <path
                 fillRule="evenodd"

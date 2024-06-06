@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
 import bcrypt from "bcrypt";
 import { createAccessToken, createRefreshToken } from "@/utils/auth";
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/db";
 
 export async function POST(request: Request) {
   try {
