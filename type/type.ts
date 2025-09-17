@@ -6,6 +6,7 @@ export interface AuthInitialState {
 export interface MaterialInitialState {
   loading: boolean;
   material: Material[];
+  allMaterials: Material[];
   currentMaterial: Material;
   failed: boolean;
   totalPages: number;

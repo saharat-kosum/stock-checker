@@ -54,6 +54,7 @@ function Admin() {
   const isLoading = useAppSelector((state) => state.material.loading);
   const materialList = useAppSelector((state) => state.material.material);
   const totalPages = useAppSelector((state) => state.material.totalPages);
+  const allMaterials = useAppSelector((state) => state.material.allMaterials);
   const defaultMaterial = useAppSelector(
     (state) => state.material.defaultMaterial
   );
@@ -68,20 +69,29 @@ function Admin() {
     sort: "name",
     itemsPerPage: "50",
   });
+  const [isGeneratingQrPdf, setIsGeneratingQrPdf] = useState(false);
 
   useEffect(() => {
     searchHandle();
   }, [select, currentPage]);
 
   const searchHandle = async () => {
-    const props = {
+    const paginatedProps = {
       select,
       currentPage,
       search,
       all: false,
     };
 
-    await dispatch(getAllMaterial(props));
+    const allProps = {
+      ...paginatedProps,
+      currentPage: 1,
+      all: true,
+    };
+    await Promise.all([
+      dispatch(getAllMaterial(paginatedProps)),
+      dispatch(getAllMaterial(allProps)),
+    ]);
   };
 
   const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -105,6 +115,95 @@ function Admin() {
     }
   };
 
+  const downloadQrPdf = async () => {
+    if (!allMaterials.length || isGeneratingQrPdf) {
+      return;
+    }
+
+    setIsGeneratingQrPdf(true);
+
+    try {
+      const [{ jsPDF }, QRCode, { sarabunBase64 }] = await Promise.all([
+        import("jspdf"),
+        import("qrcode"),
+        import("@/utils/fonts/sarabun"),
+      ]);
+
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      doc.addFileToVFS("Sarabun-Regular.ttf", sarabunBase64);
+      doc.addFont("Sarabun-Regular.ttf", "Sarabun", "normal");
+      doc.setFont("Sarabun", "normal");
+
+      const prefix =
+        process.env.NEXT_PUBLIC_PREFIX_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "");
+
+      const qrPerPage = 18;
+      const marginX = 10;
+      const marginY = 10;
+      const columnGap = 8;
+      const pxToMm = (px: number) => (px * 25.4) / 96;
+      const qrSize = pxToMm(100);
+      const gapBelowQr = pxToMm(18);
+      const gapBetweenCodeAndName = pxToMm(12);
+      const cellHeight = 44;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const usableWidth = pageWidth - marginX * 2 - columnGap * 2;
+      const columnWidth = usableWidth / 3;
+
+      for (let index = 0; index < allMaterials.length; index++) {
+        if (index > 0 && index % qrPerPage === 0) {
+          doc.addPage();
+        }
+
+        const material = allMaterials[index];
+        const pageIndex = index % qrPerPage;
+        const column = pageIndex % 3;
+        const row = Math.floor(pageIndex / 3);
+
+        const canvasData = await QRCode.toDataURL(
+          `${prefix}/balance/${material.id}`,
+          {
+            width: 256,
+            margin: 1,
+          }
+        );
+
+        const columnStart = marginX + column * (columnWidth + columnGap);
+        const centerX = columnStart + columnWidth / 2;
+        const topY = marginY + row * cellHeight;
+        const qrX = centerX - qrSize / 2;
+
+        doc.addImage(canvasData, "PNG", qrX, topY, qrSize, qrSize);
+        doc.setFontSize(10);
+        const codeY = topY + qrSize + gapBelowQr;
+        doc.text(material.code.toString(), centerX, codeY, {
+          align: "center",
+        });
+        doc.setFontSize(8);
+        const nameLines = doc.splitTextToSize(
+          material.name || "",
+          columnWidth - 6
+        );
+        const nameY = codeY + gapBetweenCodeAndName;
+        doc.text(nameLines, centerX, nameY, {
+          align: "center",
+        });
+      }
+
+      doc.save("material-qr-codes.pdf");
+    } catch (error) {
+      console.error("Failed to generate QR PDF", error);
+    } finally {
+      setIsGeneratingQrPdf(false);
+    }
+  };
+
   return (
     <div className="container mx-auto my-10 p-2">
       <div className="flex justify-between items-center">
@@ -117,6 +216,13 @@ function Admin() {
             search={search}
             all={true}
           />
+          <button
+            className="btn btn-accent btn-sm"
+            onClick={downloadQrPdf}
+            disabled={isGeneratingQrPdf || !allMaterials.length}
+          >
+            {isGeneratingQrPdf ? "Generating..." : "Download all QR"}
+          </button>
           <Link href="/admin/material" className="btn btn-primary btn-sm">
             <Plus />
             <p className="hidden sm:block">Add new material</p>

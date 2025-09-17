@@ -27,6 +27,7 @@ const defaultMaterial: Material = {
 const initialState: MaterialInitialState = {
   loading: false,
   material: [],
+  allMaterials: [],
   currentMaterial: { ...defaultMaterial },
   failed: false,
   totalPages: 1,
@@ -139,8 +140,12 @@ export const materialSlice = createSlice({
     builder
       .addCase(getAllMaterial.fulfilled, (state, action) => {
         state.loading = false;
-        state.material = action.payload.materials;
-        state.totalPages = action.payload.totalPages;
+        if (action.meta.arg.all) {
+          state.allMaterials = action.payload.materials;
+        } else {
+          state.material = action.payload.materials;
+          state.totalPages = action.payload.totalPages;
+        }
       })
       .addCase(getMaterial.fulfilled, (state, action) => {
         state.loading = false;
@@ -149,6 +154,7 @@ export const materialSlice = createSlice({
       .addCase(createMaterial.fulfilled, (state, action) => {
         state.loading = false;
         state.material.unshift(action.payload);
+        state.allMaterials.unshift(action.payload);
         state.currentMaterial = { ...defaultMaterial };
       })
       .addCase(editMaterial.fulfilled, (state, action) => {
@@ -159,10 +165,19 @@ export const materialSlice = createSlice({
         if (index !== -1) {
           state.material[index] = action.payload;
         }
+        const allIndex = state.allMaterials.findIndex(
+          (material) => material.id === action.payload.id
+        );
+        if (allIndex !== -1) {
+          state.allMaterials[allIndex] = action.payload;
+        }
       })
       .addCase(deleteMaterial.fulfilled, (state, action) => {
         state.loading = false;
         state.material = state.material.filter(
+          (material) => material.id !== action.payload.id
+        );
+        state.allMaterials = state.allMaterials.filter(
           (material) => material.id !== action.payload.id
         );
       })
