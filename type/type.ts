@@ -13,6 +13,16 @@ export interface MaterialInitialState {
   defaultMaterial: Material;
 }
 
+export interface StockCountInitialState {
+  loading: boolean;
+  stockCounts: StockCountWithMaterial[];
+  allStockCounts: StockCountWithMaterial[];
+  currentStockCount: StockCountWithMaterial;
+  failed: boolean;
+  totalPages: number;
+  defaultStockCount: StockCountWithMaterial;
+}
+
 export interface Material {
   id: string;
   sloc: number;
@@ -27,6 +37,22 @@ export interface Material {
   note: string;
   createDate: string;
   modifyDate: string;
+}
+
+export interface StockCount {
+  id: number;
+  stockCode: string;
+  materialId: string;
+  countedQty: number;
+  systemQty: number;
+  countedDate: string;
+  createdDate: string;
+  lastUpdated: string;
+  note: string | null;
+}
+
+export interface StockCountWithMaterial extends StockCount {
+  material: Material;
 }
 
 export enum EnumMode {
@@ -64,6 +90,13 @@ export interface SelectState {
 }
 
 export interface GetMaterialProps {
+  select: SelectState;
+  currentPage: number;
+  search: string;
+  all: boolean;
+}
+
+export interface GetStockCountProps {
   select: SelectState;
   currentPage: number;
   search: string;

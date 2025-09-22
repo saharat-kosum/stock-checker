@@ -22,17 +22,34 @@ model Users {
 }
 
 model Material {
-  id            String   @id @default(uuid())
-  sloc          Int      @default(6101)
+  id            String       @id @default(uuid())
+  sloc          Int          @default(6101)
   code          Int
-  name          String   @unique
-  unit          String   @default("EA")
-  bringForward  Int    
-  stockIn       Int      @default(0)
-  stockOut      Int      @default(0)
-  balance       Int      @default(0)
+  name          String       @unique
+  unit          String       @default("EA")
+  bringForward  Int   
+  stockIn       Int          @default(0)
+  stockOut      Int          @default(0)
+  balance       Int          @default(0)
   stockCount    Int  
-  note          String   @default("")
-  createDate    DateTime @default(now())
-  modifyDate    DateTime @updatedAt
+  note          String       @default("")
+  createDate    DateTime     @default(now())
+  modifyDate    DateTime     @updatedAt
+  stockCounts   StockCount[]
+}
+
+model StockCount {
+  id           Int       @id @default(autoincrement())
+  stockCode    String    @unique
+  materialId   String
+  countedQty   Int
+  systemQty    Int
+  countedDate  DateTime
+  createdDate  DateTime  @default(now())
+  lastUpdated  DateTime  @updatedAt
+  note         String?
+
+  material     Material  @relation(fields: [materialId], references: [id])
+
+  @@index([materialId])
 }

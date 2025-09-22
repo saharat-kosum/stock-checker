@@ -1,34 +1,33 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
-import { AppDispatch, useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
-import { getMaterial } from "@/redux/materialSlice";
+import { AppDispatch, useAppSelector } from "@/redux/Store";
+import {
+  getStockCount,
+  updateStockCount,
+} from "@/redux/stockCountSlice";
 import Spin from "@/components/icon/Spin";
 import Link from "next/link";
-import axios from "@/config/axios";
 
-function BalanceCheck() {
+function StockCountDetailPage() {
   const params = useParams();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const material = useAppSelector((state) => state.material.currentMaterial);
-  const isLoading = useAppSelector((state) => state.material.loading);
-  const failed = useAppSelector((state) => state.material.failed);
+  const stockCount = useAppSelector((state) => state.stockCount.currentStockCount);
+  const isLoading = useAppSelector((state) => state.stockCount.loading);
+  const failed = useAppSelector((state) => state.stockCount.failed);
 
   const [countedDate, setCountedDate] = useState("");
   const [countedQty, setCountedQty] = useState("");
-  const [systemQty, setSystemQty] = useState("0");
+  const [systemQty, setSystemQty] = useState("");
   const [note, setNote] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const hasMaterial = material.id !== "";
-
   useEffect(() => {
     if (typeof params.id === "string") {
-      const url = `/api/balance/${params.id}`;
-      void dispatch(getMaterial(url));
+      void dispatch(getStockCount(Number(params.id)));
     }
   }, [dispatch, params.id]);
 
@@ -39,18 +38,22 @@ function BalanceCheck() {
   }, [failed]);
 
   useEffect(() => {
-    if (hasMaterial) {
-      setCountedDate((prev) =>
-        prev || new Date().toISOString().split("T")[0]
+    if (stockCount?.id) {
+      const parsedDate = new Date(stockCount.countedDate);
+      setCountedDate(
+        Number.isNaN(parsedDate.getTime())
+          ? ""
+          : parsedDate.toISOString().split("T")[0]
       );
-      setCountedQty((prev) => prev || material.balance.toString());
-      setSystemQty(material.balance.toString());
+      setCountedQty(stockCount.countedQty.toString());
+      setSystemQty(stockCount.systemQty.toString());
+      setNote(stockCount.note ?? "");
     }
-  }, [hasMaterial, material.balance]);
+  }, [stockCount]);
 
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!material?.id) {
+    if (!stockCount?.id) {
       return;
     }
 
@@ -58,23 +61,25 @@ function BalanceCheck() {
     setErrorMessage("");
 
     try {
-      await axios.post("/api/stockCount", {
-        materialId: material.id,
-        countedQty: Number(countedQty),
-        systemQty: Number(systemQty),
-        countedDate,
-        note: note || null,
-      });
-      router.push("/");
+      await dispatch(
+        updateStockCount({
+          id: stockCount.id,
+          countedDate,
+          countedQty: Number(countedQty),
+          systemQty: Number(systemQty),
+          note: note || null,
+        })
+      ).unwrap();
+      router.push("/admin/stock");
     } catch (error) {
-      console.error("Failed to save stock count", error);
+      console.error("Failed to update stock count", error);
       setErrorMessage("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (isLoading || !hasMaterial) {
+  if (isLoading || !stockCount?.id) {
     return (
       <main className="hero min-h-screen">
         <div className="hero-content text-center">
@@ -88,10 +93,16 @@ function BalanceCheck() {
     <main className="min-h-screen bg-base-200">
       <div className="container mx-auto max-w-2xl px-4 py-10">
         <header className="mb-8 text-center">
-          <p className="text-sm text-base-content/60">Material code</p>
-          <h1 className="text-4xl font-bold break-words">{material.code}</h1>
-          <p className="mt-4 text-sm text-base-content/60">Material name</p>
-          <h2 className="text-2xl font-semibold break-words">{material.name}</h2>
+          <p className="text-sm text-base-content/60">Stock count code</p>
+          <h1 className="text-4xl font-bold break-words">
+            {stockCount.stockCode}
+          </h1>
+          <p className="mt-6 text-sm text-base-content/60">Material code</p>
+          <h2 className="text-3xl font-semibold break-words">
+            {stockCount.material.code}
+          </h2>
+          <p className="mt-6 text-sm text-base-content/60">Material name</p>
+          <h2 className="text-3xl font-semibold break-words">{stockCount.material.name}</h2>
         </header>
 
         <form onSubmit={handleSave} className="space-y-6">
@@ -131,8 +142,8 @@ function BalanceCheck() {
               type="number"
               className="input input-bordered"
               value={systemQty}
-              disabled
-              readOnly
+              onChange={(event) => setSystemQty(event.target.value)}
+              required
             />
           </div>
 
@@ -155,7 +166,7 @@ function BalanceCheck() {
           )}
 
           <div className="flex justify-end gap-4">
-            <Link href="/" className="btn btn-outline" prefetch={false}>
+            <Link href="/admin/stock" className="btn btn-outline" prefetch={false}>
               Cancel
             </Link>
             <button
@@ -172,4 +183,4 @@ function BalanceCheck() {
   );
 }
 
-export default BalanceCheck;
+export default StockCountDetailPage;
