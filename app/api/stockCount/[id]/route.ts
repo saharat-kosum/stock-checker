@@ -69,6 +69,15 @@ export async function PUT(
       note,
     } = await request.json();
 
+    const existingStockCount = await prisma.stockCount.findUnique({
+      where: { id },
+      select: { countedQty: true, systemQty: true },
+    });
+
+    if (!existingStockCount) {
+      return Response.json({ error: "Stock count not found" }, { status: 404 });
+    }
+
     const updateData: Prisma.StockCountUpdateInput = {};
 
     if (stockCode !== undefined) {
@@ -99,6 +108,16 @@ export async function PUT(
         connect: { id: resolvedMaterialId },
       };
     }
+
+    const nextCountedQty =
+      typeof countedQty === "number"
+        ? countedQty
+        : existingStockCount.countedQty;
+    const nextSystemQty =
+      typeof systemQty === "number"
+        ? systemQty
+        : existingStockCount.systemQty;
+    updateData.countDiff = nextCountedQty - nextSystemQty;
 
     const updatedStockCount = await prisma.stockCount.update({
       where: { id },

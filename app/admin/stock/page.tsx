@@ -27,9 +27,11 @@ const selectArray: SelectArray[] = [
     name: "sort",
     optionArray: [
       { display: "เลขที่เอกสารเช็คสต๊อก", value: "stockCode" },
+      { display: "Material code", value: "material.code" },
       { display: "Material name", value: "material.name" },
       { display: "จำนวนที่นับได้", value: "countedQty" },
       { display: "จำนวนจากระบบ", value: "systemQty" },
+      { display: "ผลต่าง(ขาด)เกิน", value: "countDiff" },
       { display: "วันที่ทำการตรวจนับ", value: "countedDate" },
       { display: "Created date", value: "createdDate" },
       { display: "Last updated", value: "lastUpdated" },
@@ -192,9 +194,12 @@ function StockCountPage() {
               <tr className="text-center">
                 <th>No</th>
                 <th>เลขที่เอกสารเช็คสต๊อก</th>
+                <th>Material code</th>
                 <th>Material name</th>
+                <th>หน่วย</th>
                 <th>จำนวนที่นับได้</th>
                 <th>จำนวนจากระบบ</th>
+                <th>ผลต่าง(ขาด)เกิน</th>
                 <th>วันที่ทำการตรวจนับ</th>
                 <th>หมายเหตุ</th>
                 <th></th>
@@ -208,9 +213,12 @@ function StockCountPage() {
                       (index + 1)}
                   </td>
                   <td>{item.stockCode}</td>
+                  <td>{item.material.code}</td>
                   <td>{item.material.name}</td>
+                  <td>{item.material.unit}</td>
                   <td>{item.countedQty}</td>
                   <td>{item.systemQty}</td>
+                  <td>{item.countDiff}</td>
                   <td>{formatDate(item.countedDate)}</td>
                   <td>{item.note ?? "-"}</td>
                   <td>

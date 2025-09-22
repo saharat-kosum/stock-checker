@@ -7,6 +7,7 @@ const STOCK_COUNT_SORT_FIELDS = new Set([
   "materialId",
   "countedQty",
   "systemQty",
+  "countDiff",
   "countedDate",
   "createdDate",
   "lastUpdated",
@@ -58,6 +59,7 @@ const buildSearchWhere = (
   if (isNumeric) {
     orConditions.push({ countedQty: numericSearch });
     orConditions.push({ systemQty: numericSearch });
+    orConditions.push({ countDiff: numericSearch });
     orConditions.push({ material: { code: numericSearch } });
   }
 
@@ -151,6 +153,7 @@ export async function POST(request: Request) {
         stockCode,
         countedQty,
         systemQty,
+        countDiff: countedQty - systemQty,
         countedDate: new Date(countedDate),
         note: note ?? null,
         material: {

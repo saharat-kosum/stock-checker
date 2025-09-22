@@ -23,6 +23,8 @@ function BalanceCheck() {
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [countDiff, setCountDiff] = useState("0");
+
   const hasMaterial = material.id !== "";
 
   useEffect(() => {
@@ -40,13 +42,30 @@ function BalanceCheck() {
 
   useEffect(() => {
     if (hasMaterial) {
-      setCountedDate((prev) =>
-        prev || new Date().toISOString().split("T")[0]
-      );
-      setCountedQty((prev) => prev || material.balance.toString());
-      setSystemQty(material.balance.toString());
+      const defaultDate = new Date().toISOString().split("T")[0];
+      const nextSystem = material.balance.toString();
+
+      setCountedDate((prev) => prev || defaultDate);
+      setSystemQty(nextSystem);
+      setCountedQty((prev) => {
+        const nextCounted = prev || nextSystem;
+        setCountDiff((Number(nextCounted || 0) - Number(nextSystem || 0)).toString());
+        return nextCounted;
+      });
     }
   }, [hasMaterial, material.balance]);
+
+  const recalcDiff = (nextCounted: string, nextSystem: string) => {
+    const countedNumber = Number(nextCounted || 0);
+    const systemNumber = Number(nextSystem || 0);
+    setCountDiff((countedNumber - systemNumber).toString());
+  };
+
+  const handleCountedQtyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setCountedQty(value);
+    recalcDiff(value, systemQty);
+  };
 
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -92,6 +111,8 @@ function BalanceCheck() {
           <h1 className="text-4xl font-bold break-words">{material.code}</h1>
           <p className="mt-4 text-sm text-base-content/60">Material name</p>
           <h2 className="text-2xl font-semibold break-words">{material.name}</h2>
+          <p className="mt-4 text-sm text-base-content/60">Sloc</p>
+          <h2 className="text-2xl font-semibold break-words">{material.sloc}</h2>
         </header>
 
         <form onSubmit={handleSave} className="space-y-6">
@@ -118,7 +139,7 @@ function BalanceCheck() {
               value={countedQty}
               min="0"
               step="1"
-              onChange={(event) => setCountedQty(event.target.value)}
+              onChange={handleCountedQtyChange}
               required
             />
           </div>
@@ -131,6 +152,19 @@ function BalanceCheck() {
               type="number"
               className="input input-bordered"
               value={systemQty}
+              disabled
+              readOnly
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">ผลต่าง(ขาด)เกิน</span>
+            </label>
+            <input
+              type="number"
+              className="input input-bordered"
+              value={countDiff}
               disabled
               readOnly
             />

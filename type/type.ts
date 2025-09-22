@@ -45,6 +45,7 @@ export interface StockCount {
   materialId: string;
   countedQty: number;
   systemQty: number;
+  countDiff: number;
   countedDate: string;
   createdDate: string;
   lastUpdated: string;

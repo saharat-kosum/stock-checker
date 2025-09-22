@@ -28,6 +28,7 @@ const defaultStockCount: StockCountWithMaterial = {
   materialId: "",
   countedQty: 0,
   systemQty: 0,
+  countDiff: 0,
   countedDate: "",
   createdDate: "",
   lastUpdated: "",

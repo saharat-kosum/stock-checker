@@ -19,15 +19,18 @@ function StockCountExportBtn(props: GetStockCountProps) {
 
       const stockCounts = payload?.stockCounts ?? [];
 
-      const sheetRows = stockCounts.map((item) => ({
-        stockCode: item.stockCode,
+      const sheetRows = stockCounts.map((item, index) => ({
+        No: index + 1,
+        "เลขที่เอกสารเช็คสต๊อก": item.stockCode,
         materialId: item.materialId,
-        materialCode: item.material.code,
-        materialName: item.material.name,
-        countedQty: item.countedQty,
-        systemQty: item.systemQty,
-        countedDate: item.countedDate,
-        note: item.note ?? "",
+        "Material code": item.material.code,
+        "Material name": item.material.name,
+        หน่วย: item.material.unit,
+        "จำนวนที่นับได้": item.countedQty,
+        "จำนวนจากระบบ": item.systemQty,
+        "ผลต่าง(ขาด)เกิน": item.countDiff,
+        "วันที่ทำการตรวจนับ": item.countedDate,
+        "หมายเหตุ": item.note ?? "",
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(sheetRows);

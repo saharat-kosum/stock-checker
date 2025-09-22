@@ -24,6 +24,7 @@ function StockCountDetailPage() {
   const [note, setNote] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [countDiff, setCountDiff] = useState("0");
 
   useEffect(() => {
     if (typeof params.id === "string") {
@@ -48,8 +49,27 @@ function StockCountDetailPage() {
       setCountedQty(stockCount.countedQty.toString());
       setSystemQty(stockCount.systemQty.toString());
       setNote(stockCount.note ?? "");
+      setCountDiff(stockCount.countDiff.toString());
     }
   }, [stockCount]);
+
+  const recalcDiff = (nextCounted: string, nextSystem: string) => {
+    const countedNumber = Number(nextCounted || 0);
+    const systemNumber = Number(nextSystem || 0);
+    setCountDiff((countedNumber - systemNumber).toString());
+  };
+
+  const handleCountedQtyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setCountedQty(value);
+    recalcDiff(value, systemQty);
+  };
+
+  const handleSystemQtyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSystemQty(value);
+    recalcDiff(countedQty, value);
+  };
 
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -103,6 +123,8 @@ function StockCountDetailPage() {
           </h2>
           <p className="mt-6 text-sm text-base-content/60">Material name</p>
           <h2 className="text-3xl font-semibold break-words">{stockCount.material.name}</h2>
+          <p className="mt-6 text-sm text-base-content/60">Sloc</p>
+          <h2 className="text-3xl font-semibold break-words">{stockCount.material.sloc}</h2>
         </header>
 
         <form onSubmit={handleSave} className="space-y-6">
@@ -129,7 +151,7 @@ function StockCountDetailPage() {
               value={countedQty}
               min="0"
               step="1"
-              onChange={(event) => setCountedQty(event.target.value)}
+              onChange={handleCountedQtyChange}
               required
             />
           </div>
@@ -142,8 +164,20 @@ function StockCountDetailPage() {
               type="number"
               className="input input-bordered"
               value={systemQty}
-              onChange={(event) => setSystemQty(event.target.value)}
+              onChange={handleSystemQtyChange}
               required
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">ผลต่าง(ขาด)เกิน</span>
+            </label>
+            <input
+              type="number"
+              className="input input-bordered"
+              value={countDiff}
+              readOnly
             />
           </div>
 
