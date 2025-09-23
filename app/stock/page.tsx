@@ -82,9 +82,9 @@ export default function StockListPage() {
                 <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                   Material Code
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                {/* <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                   Material Name
-                </th>
+                </th> */}
                 <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                   สถานะการตรวจนับ
                 </th>
@@ -105,7 +105,7 @@ export default function StockListPage() {
                       <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-900">
                         {material.code}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{material.name}</td>
+                      {/* <td className="px-4 py-3 text-sm text-gray-900">{material.name}</td> */}
                       <td className="px-4 py-3 text-sm">
                         <span
                           className={
