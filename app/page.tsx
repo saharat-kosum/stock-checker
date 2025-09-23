@@ -2,6 +2,7 @@
 
 import LeftArrow from "@/components/icon/LeftArrow";
 import { AppDispatch } from "@/redux/Store";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
@@ -63,6 +64,11 @@ export default function Home() {
               </button>
             </div>
           </label>
+          <div className="mt-6">
+            <Link href="/stock" prefetch={false} className="btn btn-outline w-full">
+              ไปหน้ารายการตรวจนับ
+            </Link>
+          </div>
         </div>
       </div>
     </main>

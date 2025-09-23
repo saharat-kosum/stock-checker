@@ -18,6 +18,7 @@ export async function middleware(request: NextRequest) {
       pathname.includes("/login") ||
       pathname.includes("/balance") ||
       pathname.includes("/register") ||
+      pathname.includes("/stock") ||
       pathname.includes("/refresh");
 
     if (condition) {
