@@ -23,7 +23,7 @@ function BalanceCheck() {
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [countDiff, setCountDiff] = useState("0");
+  const [countDiff, setCountDiff] = useState("");
 
   const hasMaterial = material.id !== "";
 
@@ -40,6 +40,17 @@ function BalanceCheck() {
     }
   }, [failed]);
 
+  const recalcDiff = (nextCounted: string, nextSystem: string) => {
+    if (nextCounted === "") {
+      setCountDiff("");
+      return;
+    }
+
+    const countedNumber = Number(nextCounted || 0);
+    const systemNumber = Number(nextSystem || 0);
+    setCountDiff((countedNumber - systemNumber).toString());
+  };
+
   useEffect(() => {
     if (hasMaterial) {
       const defaultDate = new Date().toISOString().split("T")[0];
@@ -47,19 +58,13 @@ function BalanceCheck() {
 
       setCountedDate((prev) => prev || defaultDate);
       setSystemQty(nextSystem);
-      setCountedQty((prev) => {
-        const nextCounted = prev || nextSystem;
-        setCountDiff((Number(nextCounted || 0) - Number(nextSystem || 0)).toString());
-        return nextCounted;
-      });
+      if (countedQty !== "") {
+        recalcDiff(countedQty, nextSystem);
+      } else {
+        setCountDiff("");
+      }
     }
-  }, [hasMaterial, material.balance]);
-
-  const recalcDiff = (nextCounted: string, nextSystem: string) => {
-    const countedNumber = Number(nextCounted || 0);
-    const systemNumber = Number(nextSystem || 0);
-    setCountDiff((countedNumber - systemNumber).toString());
-  };
+  }, [countedQty, hasMaterial, material.balance]);
 
   const handleCountedQtyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
